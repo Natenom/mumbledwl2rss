@@ -10,7 +10,7 @@
 
 from HTMLParser import HTMLParser
 import urllib, sys, uuid, re
-from time import gmtime, strftime
+from time import localtime, strftime
 
 class NewHTMLParser(HTMLParser):
     def __init__(self):
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         rssfile.write('</author>\n')
         rssfile.write('<title>Mumble Downloads (inofficial feed)</title>\n')
         rssfile.write('<id>urn:uuid:%s</id>\n' % uuid.uuid3(uuid.NAMESPACE_DNS, 'Mumble Downloads'))
-        rssfile.write('<updated>%s</updated>\n'% strftime("%Y-%m-%dT%H:%M:%SZ", gmtime()))
+        rssfile.write('<updated>%s</updated>\n'% strftime("%Y-%m-%dT%H:%M:%SZ", localtime()))
         
         counter = 0
         for line in pagecontent.strip().split('\n'):
