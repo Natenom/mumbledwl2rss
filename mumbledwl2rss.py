@@ -2,9 +2,9 @@
 #
 # Converts http://mumble.info/snapshot directory listing to an rss file.
 #
-# Natenom <natenom@natenom.name>
+# Natenom <natenom@natenom.com>
 #
-# Code is Public Domain
+# This code is Public Domain.
 #
 # HTMLParser example taken from http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
 
@@ -30,7 +30,8 @@ def get_target_os_info(filename):
     """Determine target system by prefix and suffix and returns a short description."""
     
     target_os_info = ['Yeay, an update. I do not know what exactly it is.',
-                      'Windows binary, both client and server.',
+                      'Windows binary, both client and server (32 bit).',
+                      'Windows binary, both client and server (64 bit).',
                       'Mac OS X binary for the client.',
                       'Full source code for both client and server',
                       'Signature to verify the full source code package.',
@@ -40,21 +41,26 @@ def get_target_os_info(filename):
                       'Linux binary for the server (static).']
     
     if filename.startswith('mumble') and filename.endswith('.msi'):
-        target_os = 1
+	target_os = 1
+	
+        if "32" in filename:
+		target_os = 1
+	elif "64" in filename:
+		target_os = 2
     elif filename.startswith('Mumble') and filename.endswith('.dmg'):
-        target_os = 2      
-    elif filename.startswith('mumble') and filename.endswith('.tar.gz'):
         target_os = 3
-    elif filename.startswith('mumble') and filename.endswith('.tar.gz.sig'):
+    elif filename.startswith('mumble') and filename.endswith('.tar.gz'):
         target_os = 4
-    elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.xip'):
+    elif filename.startswith('mumble') and filename.endswith('.tar.gz.sig'):
         target_os = 5
-    elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.tar.bz2'):
+    elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.xip'):
         target_os = 6
-    elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.tar.bz2.sig'):
+    elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.tar.bz2'):
         target_os = 7
-    elif filename.startswith('murmur-static') and filename.endswith('.tar.bz2'):
+    elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.tar.bz2.sig'):
         target_os = 8
+    elif filename.startswith('murmur-static') and filename.endswith('.tar.bz2'):
+        target_os = 9
     else:
         target_os = 0
     
