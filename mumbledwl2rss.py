@@ -29,38 +29,59 @@ def print_help():
 def get_target_os_info(filename):
     """Determine target system by prefix and suffix and returns a short description."""
     
-    target_os_info = ['Yeay, an update. I do not know what exactly it is.',
-                      'Windows binary, both client and server (32 bit).',
-                      'Windows binary, both client and server (64 bit).',
-                      'Mac OS X binary for the client.',
-                      'Full source code for both client and server',
-                      'Signature to verify the full source code package.',
-                      'Mac OS X binary for the server (static), as xip.',
-                      'Mac OS X binary for the server (static), as tar.bz2.',
-                      'Signature to verify the Mac OS X binary package for the server.',                     
-                      'Linux binary for the server (static).']
-    
+    target_os_info = {  'unknown': 'Yeay, an update. I do not know what exactly it is.',
+			'win.client.32': 'Windows binary, both client and server (32 bit).',
+			'win.client.32.sig': 'Signature to verify Windows binary, both client and server (32 bit).',
+			'win.client.64': 'Windows binary, both client and server (64 bit).',
+			'win.client.64.sig': 'Signature to verify Windows binary, both client and server (64 bit).',
+			'mac.client': 'Mac OS X binary for the client.',
+			'mac.client.sig': 'Signature to verify Mac OS X binary for the client.',
+			'mac.client.universal': 'Mac OS X binary for the client (universal).',
+			'mac.client.universal.sig': 'Signature to verify Mac OS X binary for the client (universal).',
+			'source': 'Full source code for both client and server',
+			'source.sig': 'Signature to verify the full source code package.',
+			'mac.server.xip': 'Mac OS X binary for the server (static), as xip.',
+			'mac.server.tar.bz2': 'Mac OS X binary for the server (static), as tar.bz2.',
+			'mac.server.tar.bz2.sig': 'Signature to verify the Mac OS X binary package for the server.',                     
+			'linux.server.static': 'Linux binary for the server (static).',
+			'linux.server.static.sig': 'Signature to verify the Linux binary for the server (static).' }
+			
     if filename.startswith('mumble') and filename.endswith('.msi'):
         if "winx64" in filename:
-		target_os = 2
+		target_os = 'win.client.64'
 	else:
-		target_os = 1
+		target_os = 'win.client.32'
+    elif filename.startswith('mumble') and filename.endswith('.msi.sig'):
+        if "winx64" in filename:
+		target_os = 'win.client.64.sig'
+	else:
+		target_os = 'win.client.32.sig'
     elif filename.startswith('Mumble') and filename.endswith('.dmg'):
-        target_os = 3
+        if "Universal" in filename:
+		target_os = 'mac.client.universal'
+	else:
+		target_os = 'mac.client'
+    elif filename.startswith('Mumble') and filename.endswith('.dmg.sig'):
+        if "Universal" in filename:
+		target_os = 'mac.client.universal.sig'
+	else:
+		target_os = 'mac.client.sig'
     elif filename.startswith('mumble') and filename.endswith('.tar.gz'):
-        target_os = 4
+        target_os = 'source'
     elif filename.startswith('mumble') and filename.endswith('.tar.gz.sig'):
-        target_os = 5
+        target_os = 'source.sig'
     elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.xip'):
-        target_os = 6
+        target_os = 'mac.server.xip'
     elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.tar.bz2'):
-        target_os = 7
+        target_os = 'mac.server.tar.bz2'
     elif filename.startswith('Murmur-OSX-Static') and filename.endswith('.tar.bz2.sig'):
-        target_os = 8
+        target_os = 'mac.server.tar.bz2.sig'
     elif filename.startswith('murmur-static') and filename.endswith('.tar.bz2'):
-        target_os = 9
+        target_os = 'linux.server.static'
+    elif filename.startswith('murmur-static') and filename.endswith('.tar.bz2.sig'):
+        target_os = 'linux.server.static.sig'
     else:
-        target_os = 0
+        target_os = 'unknown'
     
     return target_os_info[target_os]
 
