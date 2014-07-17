@@ -41,12 +41,10 @@ def get_target_os_info(filename):
                       'Linux binary for the server (static).']
     
     if filename.startswith('mumble') and filename.endswith('.msi'):
-	target_os = 1
-	
-        if "32" in filename:
-		target_os = 1
-	elif "64" in filename:
+        if "winx64" in filename:
 		target_os = 2
+	else:
+		target_os = 1
     elif filename.startswith('Mumble') and filename.endswith('.dmg'):
         target_os = 3
     elif filename.startswith('mumble') and filename.endswith('.tar.gz'):
