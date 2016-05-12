@@ -16,10 +16,10 @@ class NewHTMLParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
         self.data = []
-    
+
     def handle_data(self, d):
         self.data.append(d)
-        
+
     def get_data(self):
         return ''.join(self.data)
 
@@ -28,7 +28,7 @@ def print_help():
 
 def get_target_os_info(filename):
     """Determine target system by prefix and suffix and returns a short description."""
-    
+
     target_os_info = {  'unknown': 'Yeay, an update. I do not know what exactly it is.',
 			'win.client.32': 'Windows binary, both client and server (32 bit).',
 			'win.client.32.sig': 'Signature to verify Windows binary, both client and server (32 bit).',
@@ -42,10 +42,10 @@ def get_target_os_info(filename):
 			'source.sig': 'Signature to verify the full source code package.',
 			'mac.server.xip': 'Mac OS X binary for the server (static), as xip.',
 			'mac.server.tar.bz2': 'Mac OS X binary for the server (static), as tar.bz2.',
-			'mac.server.tar.bz2.sig': 'Signature to verify the Mac OS X binary package for the server.',                     
+			'mac.server.tar.bz2.sig': 'Signature to verify the Mac OS X binary package for the server.',
 			'linux.server.static': 'Linux binary for the server (static).',
 			'linux.server.static.sig': 'Signature to verify the Linux binary for the server (static).' }
-			
+
     if filename.startswith('mumble') and filename.endswith('.msi'):
         if "winx64" in filename:
 		target_os = 'win.client.64'
@@ -82,21 +82,21 @@ def get_target_os_info(filename):
         target_os = 'linux.server.static.sig'
     else:
         target_os = 'unknown'
-    
+
     return target_os_info[target_os]
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     if len(sys.argv) < 2:
         print_help()
     else:
         rssfilename = sys.argv[1]
-        webpage=urllib.urlopen("http://mumble.info:8080/snapshot/").read()
+        webpage=urllib.urlopen("http://mumble.info/snapshot/").read()
         baseurl = "http://mumble.info/snapshot/"
-        
+
         parser = NewHTMLParser()
         parser.feed(webpage)
         pagecontent = parser.get_data()
-            
+
         rssfile = open(rssfilename, 'w')
         rssfile.write('<?xml version="1.0" encoding="utf-8"?>\n')
         rssfile.write('<feed xmlns="http://www.w3.org/2005/Atom">\n')
@@ -106,18 +106,19 @@ if __name__ == "__main__":
         rssfile.write('<title>Mumble Downloads (inofficial feed)</title>\n')
         rssfile.write('<id>urn:uuid:%s</id>\n' % uuid.uuid3(uuid.NAMESPACE_DNS, 'Mumble Downloads'))
         rssfile.write('<updated>%s</updated>\n'% strftime("%Y-%m-%dT%H:%M:%SZ", localtime()))
-        
+
         counter = 0
         for line in pagecontent.strip().split('\n'):
             if counter == 30: # We want the last xx packages.
                 break
-            
+
             found = False
             filename=""
             timestamp=""
-            
-            match = re.search(r'^ ([^ ]*).*([0-9]{1,2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2})', line)
-                
+
+            match = re.search(r'^ ([^ ]*).*([0-9]{1,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{2}:[0-9]{2})', line)
+            # This works on " mumble-1.2.16.msi.sig                                               2016-05-05 22:30  836"
+
             try:
                 filename = match.group(1).strip()
                 timestamp = match.group(2)
@@ -125,7 +126,7 @@ if __name__ == "__main__":
                 counter += 1
             except:
                 pass
-                
+
             if found == True:
                 rssfile.write('<entry>\n')
                 rssfile.write('<title>%s</title>\n' % filename)
@@ -136,7 +137,7 @@ if __name__ == "__main__":
                 rssfile.write('<content>%s</content>\n' % get_target_os_info(filename))
                 rssfile.write('<link rel="enclosure" href="%s" />\n' % (baseurl + filename))
                 rssfile.write('</entry>\n')
-        
-        rssfile.write('</feed>')  
+
+        rssfile.write('</feed>')
         rssfile.close()
         parser.close()
