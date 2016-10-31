@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Converts http://mumble.info/snapshot directory listing to an rss file.
+# Converts https://dl.mumble.info/ directory listing to an rss file.
 #
 # Natenom <natenom@natenom.com>
 #
