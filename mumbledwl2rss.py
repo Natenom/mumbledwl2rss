@@ -90,8 +90,8 @@ if __name__ == "__main__":
         print_help()
     else:
         rssfilename = sys.argv[1]
-        webpage=urllib.urlopen("http://mumble.info/snapshot/").read()
-        baseurl = "http://mumble.info/snapshot/"
+        webpage=urllib.urlopen("https://dl.mumble.info/").read()
+        baseurl = "https://dl.mumble.info/"
 
         parser = NewHTMLParser()
         parser.feed(webpage)
